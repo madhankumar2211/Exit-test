@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const users = require('./routes/user.js');
 const db ='mongodb://127.0.0.1:27017';
-const port = 3000;
+const port = 4000;
 const app = express();
 
 app.use(express.json());

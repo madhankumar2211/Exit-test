@@ -8,20 +8,18 @@ const Post = require('../model/Post');
 
 const Comment = require('../model/Comment');
 
-// * POST - add user
+// add a new user
 router.post('/users', async (req, res) => {
-	// console.log('Users route');
 	const newUser = new User(req.body);
 	try {
 		await newUser.save();
 		res.status(201).send(newUser);
 	} catch (err) {
-		// TODO: add response
 		res.status(500).send();
 	}
 });
 
-// * GET - get users
+//get all users
 router.get('/users', async (req, res) => {
 	try {
 		const users = await User.find({});
@@ -31,10 +29,11 @@ router.get('/users', async (req, res) => {
 	}
 });
 
+// get user by id
 router.get('/users/:id', async (req, res) => {
-	const _id = req.params.id;
+	const userId = req.params.id;
 	try {
-		const user = await User.findById(_id);
+		const user = await User.findById(userId);
 		if (!user) {
 			return res.status(404).send({ error: 'User not found' });
 		}
@@ -44,11 +43,10 @@ router.get('/users/:id', async (req, res) => {
 	}
 });
 
-// * PATCH  => update user
+//update a user
 router.patch('/users/:id', async (req, res) => {
 	const updates = Object.keys(req.body);
-	console.log(updates);
-	const allowedUpdates = ['name'];
+	const allowedUpdates = ['name','phone','username'];
 	const isValidOperation = updates.every((update) => {
 		return allowedUpdates.includes(update);
 	});
@@ -72,7 +70,7 @@ router.patch('/users/:id', async (req, res) => {
 	}
 });
 
-// * DELETE => delete user
+// delete a user
 router.delete('/users/:id', async (req, res) => {
 	try {
 		const user = await User.findByIdAndDelete(req.params.id);
@@ -88,7 +86,7 @@ router.delete('/users/:id', async (req, res) => {
 
 //get all posts
 
-router.get('/posts', async (req, res) => {
+router.get('/users/0/posts', async (req, res) => {
 	try {
 		const posts = await Post.find({});
 		res.send(posts);
@@ -97,27 +95,50 @@ router.get('/posts', async (req, res) => {
 	}
 });
 
+//get post using user id
 
+router.get('/users/:id/posts', async (req, res) => {
+	const userId = req.params.id;
+	try {
+		const user = await User.findById(userId);
+		if (!user) {
+			return res.status(404).send({ error: 'User not found' });
+		}
+		const post = await Post.find({userId});
+		res.send(post);
+	} catch (error) {
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
 
 //add a new post
 
-router.post('/posts', async (req, res) => {
+router.post('/users/:id/posts', async (req, res) => {
 	const newPost = new Post(req.body);
+	const userId = req.params.id;
 	try {
+		const user = await User.findById(userId);
+		if (!user) {
+			return res.status(404).send({ error: 'User not found' });
+		}
+		newPost.userId = userId;
 		await newPost.save();
 		res.status(201).send(newPost);
 	} catch (err) {
-		// TODO: add response
 		res.status(500).send();
 	}
 });
 
-//get post by id
-
-router.get('/posts', async (req, res) => {
-	const _id = req.params.id;
+//delete a post from user
+router.delete('/users/:id/posts/:pid', async (req, res) => {
+	const userId = req.params.id;
+	const postId = req.params.pid;
 	try {
-		const post = await Post.findById(_id);
+		const user = await User.findById(userId);
+		if (!user) {
+			return res.status(404).send({ error: 'User not found' });
+		}
+		const post = await Post.findByIdAndDelete(postId);
 		if (!post) {
 			return res.status(404).send({ error: 'Post not found' });
 		}
@@ -127,20 +148,31 @@ router.get('/posts', async (req, res) => {
 	}
 });
 
+
 //add a comment
-router.post('/comments', async (req, res) => {
+router.post('/users/:id/posts/:pid/comments', async (req, res) => {
 	const newCmnt = new Comment(req.body);
+	const postId = req.params.pid;
+	const userId = req.params.id;
 	try {
+		const user = await User.findById(userId);
+		if (!user) {
+			return res.status(404).send({ error: 'User not found' });
+		}
+		const post = await Post.findById(postId);
+		if (!post) {
+			return res.status(404).send({ error: 'Post not found' });
+		}
+		newCmnt.postId = postId;
 		await newCmnt.save();
 		res.status(201).send(newCmnt);
 	} catch (err) {
-		// TODO: add response
 		res.status(500).send();
 	}
 });
 
 //get a commnet
-router.get('/comments', async (req, res) => {
+router.get('/users/0/posts/0/comments', async (req, res) => {
 	try {
 		const commnet = await Comment.find({});
 		res.send(commnet);
@@ -149,6 +181,29 @@ router.get('/comments', async (req, res) => {
 	}
 });
 
+//delete a comment from a post
+router.delete('/users/:id/posts/:pid/comments/:cid', async (req, res) => {
+	const userId = req.params.id;
+	const postId = req.params.pid;
+	const cmntId = req.params.cid;
+	try {
+		const user = await User.findById(userId);
+		if (!user) {
+			return res.status(404).send({ error: 'User not found' });
+		}
+		const post = await Post.findById(postId);
+		if (!post) {
+			return res.status(404).send({ error: 'Post not found' });
+		}
+		const comment = await Comment.findById(cmntId);
+		if (!comment) {
+			return res.status(404).send({ error: 'Comment not found' });
+		}
+		res.send(comment);
+	} catch (error) {
+		res.status(500).send({ error: 'Internal server error' });
+	}
+});
 
 
 module.exports = router;

@@ -9,7 +9,7 @@ const Post = require('../model/Post');
 const Comment = require('../model/Comment');
 
 // add a new user
-router.post('/users', async (req, res) => {
+router.post('/', async (req, res) => {
 	const newUser = new User(req.body);
 	try {
 		await newUser.save();
@@ -20,7 +20,7 @@ router.post('/users', async (req, res) => {
 });
 
 //get all users
-router.get('/users', async (req, res) => {
+router.get('/', async (req, res) => {
 	try {
 		const users = await User.find({});
 		res.send(users);
@@ -30,7 +30,7 @@ router.get('/users', async (req, res) => {
 });
 
 // get user by id
-router.get('/users/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
 	const userId = req.params.id;
 	try {
 		const user = await User.findById(userId);
@@ -44,7 +44,7 @@ router.get('/users/:id', async (req, res) => {
 });
 
 //update a user
-router.patch('/users/:id', async (req, res) => {
+router.patch('/:id', async (req, res) => {
 	const updates = Object.keys(req.body);
 	const allowedUpdates = ['name','phone','username'];
 	const isValidOperation = updates.every((update) => {
@@ -71,7 +71,7 @@ router.patch('/users/:id', async (req, res) => {
 });
 
 // delete a user
-router.delete('/users/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
 	try {
 		const user = await User.findByIdAndDelete(req.params.id);
 		if (!user) {
@@ -83,10 +83,9 @@ router.delete('/users/:id', async (req, res) => {
 	}
 });
 
-
 //get all posts
 
-router.get('/users/0/posts', async (req, res) => {
+router.get('/0/posts', async (req, res) => {
 	try {
 		const posts = await Post.find({});
 		res.send(posts);
@@ -97,7 +96,7 @@ router.get('/users/0/posts', async (req, res) => {
 
 //get post using user id
 
-router.get('/users/:id/posts', async (req, res) => {
+router.get('/:id/posts', async (req, res) => {
 	const userId = req.params.id;
 	try {
 		const user = await User.findById(userId);
@@ -113,7 +112,7 @@ router.get('/users/:id/posts', async (req, res) => {
 
 //add a new post
 
-router.post('/users/:id/posts', async (req, res) => {
+router.post('/:id/posts', async (req, res) => {
 	const newPost = new Post(req.body);
 	const userId = req.params.id;
 	try {
@@ -130,7 +129,7 @@ router.post('/users/:id/posts', async (req, res) => {
 });
 
 //delete a post from user
-router.delete('/users/:id/posts/:pid', async (req, res) => {
+router.delete('/:id/posts/:pid', async (req, res) => {
 	const userId = req.params.id;
 	const postId = req.params.pid;
 	try {
@@ -150,7 +149,7 @@ router.delete('/users/:id/posts/:pid', async (req, res) => {
 
 
 //add a comment
-router.post('/users/:id/posts/:pid/comments', async (req, res) => {
+router.post('/:id/posts/:pid/comments', async (req, res) => {
 	const newCmnt = new Comment(req.body);
 	const postId = req.params.pid;
 	const userId = req.params.id;
@@ -172,7 +171,7 @@ router.post('/users/:id/posts/:pid/comments', async (req, res) => {
 });
 
 //get a commnet
-router.get('/users/0/posts/0/comments', async (req, res) => {
+router.get('/0/posts/0/comments', async (req, res) => {
 	try {
 		const commnet = await Comment.find({});
 		res.send(commnet);
@@ -182,7 +181,7 @@ router.get('/users/0/posts/0/comments', async (req, res) => {
 });
 
 //delete a comment from a post
-router.delete('/users/:id/posts/:pid/comments/:cid', async (req, res) => {
+router.delete('/:id/posts/:pid/comments/:cid', async (req, res) => {
 	const userId = req.params.id;
 	const postId = req.params.pid;
 	const cmntId = req.params.cid;
@@ -204,6 +203,5 @@ router.delete('/users/:id/posts/:pid/comments/:cid', async (req, res) => {
 		res.status(500).send({ error: 'Internal server error' });
 	}
 });
-
 
 module.exports = router;

@@ -2,15 +2,11 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const cmntSchema = new Schema({
+const CmntSchema = new Schema({
     postId:{
         type: String,
         required: true
 
-    },
-    _id:{
-        type:String,
-        required:true
     },
     name:{
         type:String,
@@ -27,4 +23,4 @@ const cmntSchema = new Schema({
 
 });
 
-module.exports = Comment = mongoose.model('Comments', cmntSchema);
+module.exports = Comment = mongoose.model('Comments', CmntSchema);

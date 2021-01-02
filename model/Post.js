@@ -7,11 +7,6 @@ const PostSchema  = new Schema({
     userId:{
         type: String,
         required:true
-        
-    },
-    _id:{
-        type:String,
-        required: true
     },
     title:{
         type: String,

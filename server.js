@@ -7,7 +7,7 @@ const port = 4000;
 const app = express();
 
 app.use(express.json());
-app.use('/', users);
+app.use('/users', users);
 
 mongoose
 	.connect(db, {

@@ -194,7 +194,7 @@ router.delete('/:id/posts/:pid/comments/:cid', async (req, res) => {
 		if (!post) {
 			return res.status(404).send({ error: 'Post not found' });
 		}
-		const comment = await Comment.findById(cmntId);
+		const comment = await Comment.findByIdAndDelete(cmntId);
 		if (!comment) {
 			return res.status(404).send({ error: 'Comment not found' });
 		}

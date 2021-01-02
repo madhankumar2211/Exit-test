@@ -4,8 +4,8 @@ const Schema = mongoose.Schema;
 
 const CmntSchema = new Schema({
     postId:{
-        type: String,
-        required: true
+        type: Schema.Types.ObjectId,
+        ref: 'Posts'
 
     },
     name:{

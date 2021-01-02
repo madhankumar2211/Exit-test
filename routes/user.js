@@ -120,7 +120,7 @@ router.post('/:id/posts', async (req, res) => {
 		if (!user) {
 			return res.status(404).send({ error: 'User not found' });
 		}
-		newPost.userId = userId;
+		newPost.userId = user.id;
 		await newPost.save();
 		res.status(201).send(newPost);
 	} catch (err) {
@@ -162,7 +162,7 @@ router.post('/:id/posts/:pid/comments', async (req, res) => {
 		if (!post) {
 			return res.status(404).send({ error: 'Post not found' });
 		}
-		newCmnt.postId = postId;
+		newCmnt.postId = post.id;
 		await newCmnt.save();
 		res.status(201).send(newCmnt);
 	} catch (err) {

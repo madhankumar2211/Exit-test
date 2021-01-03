@@ -20,7 +20,7 @@ router.post('/addUser', async (req, res) => {
 });
 
 //2. get all users
-router.get('/', async (req, res) => {
+router.get('/allUsers', async (req, res) => {
 	try {
 		const users = await User.find({});
 		res.send(users);
@@ -85,7 +85,7 @@ router.delete('/deleteUser/:id', async (req, res) => {
 
 //6. get all posts
 
-router.get('/posts', async (req, res) => {
+router.get('/allposts', async (req, res) => {
 	try {
 		const posts = await Post.find({});
 		res.send(posts);
